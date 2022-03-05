@@ -8,7 +8,7 @@ import (
   "time"
 )
 
-const WORDS = "assets/words.txt"
+const WORDS = "../assets/words.txt"
 const GUESSES = 6
 const B = "⬛"
 const G = "🟩"
@@ -32,6 +32,11 @@ func Init() State {
 }
 
 func (self *State) Handle(guess string) {
+  if !self.Valid(guess) {
+    self.line = ""
+    return
+  }
+
   line := ""
   for i, char := range guess {
     if self.word[i] == byte(char) {
@@ -42,6 +47,8 @@ func (self *State) Handle(guess string) {
       line += B
     }
   }
+
+  self.line = line
   self.board = append(self.board, line)
 }
 
@@ -58,6 +65,10 @@ func (self *State) Print() {
   for _, line := range self.board {
     fmt.Println(line)
   }
+}
+
+func (self *State) Valid(guess string) bool {
+  return len(guess) == len(self.word) && self.Contains(guess)
 }
 
 func read() []string {
@@ -88,7 +99,7 @@ func main() {
     state.Print()
 
     guess := prompt()
-    for len(guess) != len(state.word) || !state.Contains(guess) {
+    for !state.Valid(guess) {
       fmt.Println("Invalid guess.")
       guess = prompt()
     }

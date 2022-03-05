@@ -10,10 +10,14 @@ alias r := run
 default:
   just --list
 
-all: lint forbid fmt-check
+all: test lint forbid fmt-check
 
 run:
-	go run {{files}}
+	#!/bin/bash
+	go run `fd .go -E *_test.go`
+
+test:
+	go test {{files}}
 
 fmt:
 	gofmt -w {{files}}
