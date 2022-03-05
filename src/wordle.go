@@ -1,6 +1,7 @@
 package main
 
 import (
+  "errors"
   "fmt"
   "io/ioutil"
   "math/rand"
@@ -16,7 +17,6 @@ const Y = "🟨"
 
 type State struct {
   board []string
-  line  string
   word  string
   words []string
 }
@@ -25,16 +25,14 @@ func Init() State {
   words := read()
   return State{
     board: []string{},
-    line:  "",
     word:  word(words),
     words: words,
   }
 }
 
-func (self *State) Handle(guess string) {
+func (self *State) Handle(guess string) error {
   if !self.Valid(guess) {
-    self.line = ""
-    return
+    return errors.New("Invalid guess.")
   }
 
   line := ""
@@ -48,8 +46,15 @@ func (self *State) Handle(guess string) {
     }
   }
 
-  self.line = line
   self.board = append(self.board, line)
+  return nil
+}
+
+func (self *State) Line() string {
+  if len(self.board) != 0 {
+    return self.board[len(self.board)-1]
+  }
+  return ""
 }
 
 func (self *State) Contains(word string) bool {
@@ -104,12 +109,14 @@ func main() {
     }
 
     guess := prompt()
-    for !state.Valid(guess) {
-      fmt.Println("Invalid guess.")
-      guess = prompt()
+    for true {
+      if err := state.Handle(guess); err != nil {
+        fmt.Println(err)
+        guess = prompt()
+      } else {
+        break
+      }
     }
-
-    state.Handle(guess)
 
     if guess == state.word {
       state.Print()
