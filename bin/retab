@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for file in `ls src/*`; do
+  content=`expand -t 2 $file`
+  echo "$content" > $file
+done
