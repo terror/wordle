@@ -8,7 +8,7 @@ import (
   "time"
 )
 
-const WORDS = "../assets/words.txt"
+const WORDS = "assets/words.txt"
 const GUESSES = 6
 const B = "⬛"
 const G = "🟩"
@@ -94,9 +94,14 @@ func prompt() string {
 func main() {
   state := Init()
 
-  i := 0
-  for i < GUESSES {
+  i := GUESSES
+  for true {
     state.Print()
+
+    if i == 0 {
+      fmt.Printf("word: %s\n", state.word)
+      break
+    }
 
     guess := prompt()
     for !state.Valid(guess) {

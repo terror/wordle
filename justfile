@@ -14,10 +14,10 @@ all: test lint forbid fmt-check
 
 run:
 	#!/bin/bash
-	go run `fd .go -E *_test.go`
+	go run `fd .go ./src -E *_test.go`
 
 test:
-	go test {{files}}
+	go test ./src
 
 fmt:
 	gofmt -w {{files}}

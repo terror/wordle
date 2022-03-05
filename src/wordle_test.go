@@ -2,6 +2,7 @@ package main
 
 import (
   "github.com/stretchr/testify/assert"
+  _ "github.com/terror/wordle/testing"
   "testing"
 )
 
